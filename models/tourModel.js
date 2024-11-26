@@ -143,11 +143,6 @@ tourSchema.pre('save', function (next) {
 //   next();
 // });
 
-tourSchema.post('save', function (doc, next) {
-  console.log(doc);
-  next();
-});
-
 // QUERY MIDDLEWARE: runs before .find() methods
 tourSchema.pre(/^find/, function (next) {
   this.find({ secretTour: { $ne: true } });
@@ -159,11 +154,6 @@ tourSchema.pre(/^find/, function (next) {
     path: 'guides',
     select: '-__v -passwordChangedAt',
   });
-  next();
-});
-
-tourSchema.post(/^find/, function (docs, next) {
-  // console.log(docs);
   next();
 });
 
