@@ -2,12 +2,19 @@ const express = require('express');
 const tourController = require('../controllers/tourController');
 const authController = require('../controllers/authController');
 const reviewRouter = require('./reviewRoutes');
+const bookingRouter = require('./bookingRoutes');
 
 const router = express.Router();
 
 // router.param('id', tourController.checkID);
 
 router.use('/:tourId/reviews', reviewRouter);
+router.use(
+  '/:tourId/bookings',
+  authController.protect,
+  authController.restrictTo('admin', 'lead-guide'),
+  bookingRouter,
+);
 
 router.route('/top-5-tours').get(tourController.aliasTopTours, tourController.getAllTours);
 

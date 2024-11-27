@@ -46,6 +46,13 @@ block content
                     +overviewBox('Rating', `${tour.ratingsAverage} / 5`, 'star')
 
                 .overview-box__group
+                    h2.heading-secondary.ma-bt-lg Leave your review
+                        .overview-box__detail
+                            form
+                            button.btn.btn--green.span-all-rows#send-review(data-tour-id=`${tour.id}`) Send
+                            
+
+                .overview-box__group
                     h2.heading-secondary.ma-bt-lg Your tour guides
                     each guide in tour.guides
                         .overview-box__detail

@@ -1,8 +1,16 @@
 const express = require('express');
 const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
+const bookingRouter = require('./bookingRoutes');
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
+
+router.use(
+  '/:userId/bookings',
+  authController.protect,
+  authController.restrictTo('admin', 'lead-guide'),
+  bookingRouter,
+);
 
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
