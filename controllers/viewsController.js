@@ -37,6 +37,7 @@ exports.getTour = catchAsync(async (req, res, next) => {
     .render('tour', {
       title: `${tour.name} Tour`,
       tour,
+      // rating,
     });
 });
 

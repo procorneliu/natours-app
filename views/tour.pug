@@ -4,6 +4,7 @@ include _reviewCard
 block append head
     script(src='https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.js', crossorigin)
     link(href='https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.css' rel='stylesheet', crossorigin)
+    link(href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css' rel='stylesheet')
     script(src="https://js.stripe.com/v3/" )
 
 mixin overviewBox(label, text, icon)
@@ -13,6 +14,14 @@ mixin overviewBox(label, text, icon)
         span.overview-box__label= label
         span.overview-box__text= text
 
+
+mixin reviewStar(num)
+    if(num === 5)
+        input(type='radio', name='rating', id=`star-${num}`, class='rating-radio', value=`${num}` checked)
+    else
+        input(type='radio', name='rating', id=`star-${num}`, class='rating-radio', value=`${num}`)
+    label.rating-label(for=`star-${num}`)
+        i.fa-solid.fa-star
 
 block content
     section.section-header
@@ -47,11 +56,19 @@ block content
 
                 .overview-box__group
                     h2.heading-secondary.ma-bt-lg Leave your review
-                        .overview-box__detail
-                            form
-                            button.btn.btn--green.span-all-rows#send-review(data-tour-id=`${tour.id}`) Send
-                            
-
+                    .overview-box__detail
+                        .review-form
+                            form.form--review
+                                textarea#review.form__input(type='text', placeholder='This tour was AWESOMEEE, 5/5!', required, minlength='5' data-tour-id=`${tour.id}` data-user-id=`${user.id}`)
+                                .container__stars
+                                    .rating
+                                        p.rating__insdicator
+                                            span#current-rating 5
+                                            | /5
+                                        each star, i in [1, 2, 3, 4, 5]
+                                            +reviewStar(5 - i)
+                                button.btn.btn--green.span-all-rows#send-review(type='submit' data-tour-id=`${tour.id}`) Send
+                                
                 .overview-box__group
                     h2.heading-secondary.ma-bt-lg Your tour guides
                     each guide in tour.guides

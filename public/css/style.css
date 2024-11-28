@@ -1155,6 +1155,53 @@ body {
   border-radius: 5px;
 }
 
+.review-form {
+  color: black;
+  width: 100%;
+}
+
+.container__stars .rating {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  direction: rtl;
+  margin-bottom: 2rem;
+  color: #999;
+}
+
+.container__stars .rating label {
+  display: inline-block;
+  cursor: pointer;
+  color: #999;
+  padding-left: 5px;
+}
+
+.container__stars .rating label i {
+  font-size: 2rem;
+  transition: 0.1s ease-in;
+}
+
+.container__stars .rating label:hover i,
+.container__stars .rating label:hover ~ label i {
+  color: #20bf6b;
+}
+
+.container__stars .rating .rating-radio {
+  display: none;
+}
+
+.container__stars .rating input[type='radio']:checked + label i,
+.container__stars .rating input[type='radio']:checked ~ label i {
+  color: #20bf6b;
+}
+
+textarea {
+  resize: none;
+  height: 10rem;
+  margin-bottom: 2rem;
+}
+
 .form__input {
   display: block;
   font-family: inherit;

@@ -4,9 +4,11 @@ import '@babel/polyfill';
 import { login, logout } from './login';
 import { signup } from './signup';
 import { updateSettings } from './updateSettings';
+import { postReview } from './postData';
 import { displayMap } from './mapbox';
 import { bookTour } from './stripe';
 import { showAlert } from './alerts';
+import { setRating } from './reviewStars';
 
 // DOM ELEMENTES
 const mapBox = document.getElementById('map');
@@ -16,6 +18,7 @@ const logoutBtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
 const bookBtn = document.getElementById('book-tour');
+const reviewForm = document.querySelector('.form--review');
 
 if (mapBox) {
   const locations = JSON.parse(mapBox.dataset.locations);
@@ -71,6 +74,29 @@ if (userPasswordForm) {
   });
 }
 
+if (reviewForm) {
+  setRating();
+  reviewForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    e.target.querySelector('.btn').textContent = 'Processing...';
+
+    const textarea = reviewForm.querySelector('#review');
+
+    const tour = textarea.dataset.tourId;
+    const user = textarea.dataset.userId;
+    const review = document.getElementById('review').value;
+    const rating = document.getElementById('current-rating').textContent;
+
+    await postReview({ review, rating, tour, user });
+
+    // Clear all inputs
+    setTimeout(() => {
+      e.target.querySelector('.btn').textContent = 'Send';
+      reviewForm.querySelector('textarea').value = '';
+    }, 1000);
+  });
+}
+
 if (logoutBtn) logoutBtn.addEventListener('click', logout);
 
 if (bookBtn) {
@@ -84,3 +110,7 @@ if (bookBtn) {
 
 const alertMessage = document.querySelector('body').dataset.alert;
 if (alertMessage) showAlert('success', alertMessage, 20);
+
+exports.getTourSlug = () => {
+  return location.pathname.split('/').at(-1);
+};
