@@ -51,6 +51,18 @@ const importTours = async () => {
   process.exit();
 };
 
+// IMPORT TOURS TO DATABASE
+const importReviews = async () => {
+  try {
+    await Tour.create(reviews);
+
+    console.log('Reviews successfully loaded!');
+  } catch (err) {
+    console.log(err);
+  }
+  process.exit();
+};
+
 // DELETE ALL DATA FROM DATABASE
 const deleteData = async () => {
   try {
@@ -77,6 +89,18 @@ const deleteTours = async () => {
   process.exit();
 };
 
+// DELETE ALL TOURS FROM DATABASE
+const deleteReviews = async () => {
+  try {
+    await Review.deleteMany();
+
+    console.log('All reviews are successfully deleted!');
+  } catch (err) {
+    console.log(err);
+  }
+  process.exit();
+};
+
 if (process.argv[2] === '--import') {
   importData();
 } else if (process.argv[2] === '--delete') {
@@ -85,6 +109,10 @@ if (process.argv[2] === '--import') {
   importTours();
 } else if (process.argv[2] === '--delete-tours') {
   deleteTours();
+} else if (process.argv[2] === '--import-reviews') {
+  importReviews();
+} else if (process.argv[2] === '--delete-reviews') {
+  deleteReviews();
 }
 
 console.log(process.argv);

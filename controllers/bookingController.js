@@ -1,6 +1,6 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const Tour = require('../models/tourModel');
-// const User = require('../models/userModel');
+const User = require('../models/userModel');
 const Booking = require('../models/bookingModel');
 const catchAsync = require('../utils/catchAsync');
 const factory = require('./handlerFactory');
@@ -43,8 +43,8 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     mode: 'payment',
-    // success_url: `${req.protocol}://${req.get('host')}/my-tours?alert=booking`,
-    success_url: `${req.protocol}://${req.get('host')}/my-tours?tour=${req.params.tourId}&user=${req.user.id}&price=${tour.price}`,
+    success_url: `${req.protocol}://${req.get('host')}/my-tours?alert=booking`,
+    // success_url: `${req.protocol}://${req.get('host')}/my-tours?tour=${req.params.tourId}&user=${req.user.id}&price=${tour.price}`,
     cancel_url: `${req.protocol}://${req.get('host')}/tour/${tour.slug}`,
     customer_email: req.user.email,
     client_reference_id: req.params.tourId,
@@ -84,44 +84,45 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   });
 });
 
-// exports.createBookingCheckout = async session => {
-//   try {
-//     const tour = session.client_reference_id;
-//     const user = (await User.findOne({ email: session.customer_email })).id;
-//     const price = session.amount_total / 100;
-//     console.log(session);
-//     await Booking.create({ tour, user, price });
-//   } catch (err) {
-//     console.log('Error creating booking:', err);
-//   }
-// };
+exports.createBookingCheckout = async session => {
+  try {
+    const tour = session.client_reference_id;
+    const user = (await User.findOne({ email: session.customer_email })).id;
+    const price = session.amount_total / 100;
+    console.log(session);
+    await Booking.create({ tour, user, price });
+  } catch (err) {
+    console.log('Error creating booking:', err);
+  }
+};
 
-exports.createBookingCheckout = catchAsync(async (req, res, next) => {
-  const { tour, user, price } = req.query;
+// exports.createBookingCheckout = catchAsync(async (req, res, next) => {
+//   const { tour, user, price } = req.query;
 
-  if (!tour && !user && !price) return next();
-  await Booking.create({ tour, user, price });
+//   if (!tour && !user && !price) return next();
+//   await Booking.create({ tour, user, price });
 
-  // Add participants to tour start date
-  // const tour = await Tour.findById(tour);
+//   // Add participants to tour start date
+//   // const tour = await Tour.findById(tour);
 
-  res.redirect(req.originalUrl.split('?')[0]);
-});
+//   res.redirect(req.originalUrl.split('?')[0]);
+// });
 
-// exports.webhookCheckout = (req, res, next) => {
-//   console.log('Webhook received 💥');
-//   const signature = req.headers['stripe-signature'];
+exports.webhookCheckout = (req, res, next) => {
+  console.log('Webhook received 💥');
+  const signature = req.headers['stripe-signature'];
 
-//   let event;
-//   try {
-//     event = stripe.webhooks.constructEvent(req.body, signature, process.env.STRIPE_WEBHOOK_SECRET);
-//   } catch (err) {
-//     return res.status(400).send(`Webhook error: ${err.message}`);
-//   }
-//   if (event.type === 'checkout.session.completed') createBookingCheckout(event.data.object);
+  let event;
+  try {
+    event = stripe.webhooks.constructEvent(req.body, signature, process.env.STRIPE_WEBHOOK_SECRET);
+  } catch (err) {
+    return res.status(400).send(`Webhook error: ${err.message}`);
+  }
+  // eslint-disable-next-line no-undef
+  if (event.type === 'checkout.session.completed') createBookingCheckout(event.data.object);
 
-//   res.status(200).json({ received: true });
-// };
+  res.status(200).json({ received: true });
+};
 
 exports.getTourBookings = catchAsync(async (req, res, next) => {
   const tourId = req.params.id;
