@@ -12944,7 +12944,7 @@ var bookTour = exports.bookTour = /*#__PURE__*/function () {
         case 9:
           _context.prev = 9;
           _context.t0 = _context["catch"](1);
-          (0, _alerts.showAlert)('error', _context.t0);
+          (0, _alerts.showAlert)('error', _context.t0.response.data.message);
         case 12:
         case "end":
           return _context.stop();
@@ -13238,6 +13238,13 @@ if (bookBtn) {
     e.target.textContent = 'Processing...';
     var tourId = e.target.dataset.tourId;
     (0, _stripe.bookTour)(tourId);
+
+    // If user cannot book a tour, disable button after ? seconds
+    setTimeout(function () {
+      e.target.textContent = 'Book tour now!';
+      e.target.setAttribute('disabled', '');
+      e.target.style.backgroundColor = 'gray';
+    }, 2 * 1000);
   });
 }
 var alertMessage = document.querySelector('body').dataset.alert;
@@ -13270,7 +13277,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64186" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61938" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

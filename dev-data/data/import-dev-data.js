@@ -11,10 +11,10 @@ const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSW
 
 mongoose
   .connect(DB, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
+    // useNewUrlParser: true,
+    // useUnifiedTopology: true,
+    // useCreateIndex: true,
+    // useFindAndModify: false,
   })
   .then(() => console.log('DB connection successful!'));
 
@@ -23,8 +23,9 @@ mongoose
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, 'utf-8'));
 const users = JSON.parse(fs.readFileSync(`${__dirname}/users.json`, 'utf-8'));
 const reviews = JSON.parse(fs.readFileSync(`${__dirname}/reviews.json`, 'utf-8'));
+const newTours = JSON.parse(fs.readFileSync(`${__dirname}/tours_test2.json`, 'utf-8'));
 
-// IMPROT DATE TO DATABASE
+// IMPORT DATE TO DATABASE
 const importData = async () => {
   try {
     await Tour.create(tours);
@@ -32,6 +33,18 @@ const importData = async () => {
     await Review.create(reviews);
 
     console.log('Data successfully added!');
+  } catch (err) {
+    console.log(err);
+  }
+  process.exit();
+};
+
+// IMPORT TOURS TO DATABASE
+const importTours = async () => {
+  try {
+    await Tour.create(newTours);
+
+    console.log('Tours successfully loaded!');
   } catch (err) {
     console.log(err);
   }
@@ -52,10 +65,26 @@ const deleteData = async () => {
   process.exit();
 };
 
+// DELETE ALL TOURS FROM DATABASE
+const deleteTours = async () => {
+  try {
+    await Tour.deleteMany();
+
+    console.log('All tours are successfully deleted!');
+  } catch (err) {
+    console.log(err);
+  }
+  process.exit();
+};
+
 if (process.argv[2] === '--import') {
   importData();
 } else if (process.argv[2] === '--delete') {
   deleteData();
+} else if (process.argv[2] === '--import-tours') {
+  importTours();
+} else if (process.argv[2] === '--delete-tours') {
+  deleteTours();
 }
 
 console.log(process.argv);

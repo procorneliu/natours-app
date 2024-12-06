@@ -105,6 +105,13 @@ if (bookBtn) {
     const { tourId } = e.target.dataset;
 
     bookTour(tourId);
+
+    // If user cannot book a tour, disable button after ? seconds
+    setTimeout(() => {
+      e.target.textContent = 'Book tour now!';
+      e.target.setAttribute('disabled', '');
+      e.target.style.backgroundColor = 'gray';
+    }, 2 * 1000);
   });
 }
 

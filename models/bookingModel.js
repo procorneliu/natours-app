@@ -10,6 +10,7 @@ const bookingSchema = mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'User',
     required: [true, 'Booking must belong to an User'],
+    unique: true,
   },
   price: {
     type: Number,
@@ -24,6 +25,8 @@ const bookingSchema = mongoose.Schema({
     default: true,
   },
 });
+
+bookingSchema.index({ tour: 1, user: 1 }, { unique: true });
 
 bookingSchema.pre(/^find/, function (next) {
   this.populate('user').populate({
