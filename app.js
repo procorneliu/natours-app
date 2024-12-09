@@ -22,7 +22,7 @@ const bookingController = require('./controllers/bookingController');
 const app = express();
 
 // enable later
-// app.enable('trust proxy');
+app.enable('trust proxy', 5);
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
@@ -31,7 +31,6 @@ app.set('views', path.join(__dirname, 'views'));
 // Implement CORS
 app.use(cors());
 // Access-Control-Allow-Origin *
-
 app.options('*', cors());
 
 // Serving static files

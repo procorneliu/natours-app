@@ -84,13 +84,16 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.createBookingCheckout = async session => {
+const createBookingCheckout = async session => {
   try {
     const tour = session.client_reference_id;
     const user = (await User.findOne({ email: session.customer_email })).id;
     const price = session.amount_total / 100;
-    console.log(session);
     await Booking.create({ tour, user, price });
+
+    const customFieldValue = session.custom_fields[0].dropdown.value;
+    Tour.findByIdAndUpdate(tour, { $set: { [`startDates.${customFieldValue}`]: { participants: 1 } } });
+    // tour.startDates[];
   } catch (err) {
     console.log('Error creating booking:', err);
   }
