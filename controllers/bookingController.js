@@ -106,14 +106,14 @@ const createBookingCheckout = async session => {
     // );
     // console.log(result);
 
-    const tourDoc = Tour.findById(tour);
+    // const tourDoc = Tour.findById(tour);
 
-    console.log(tourDoc);
-    tourDoc.startDates[1].participants = 12;
+    // console.log(tourDoc);
+    // tourDoc.startDates[1].participants = 12;
 
-    await tourDoc.save();
+    // await tourDoc.save();
 
-    console.log(tourDoc);
+    // console.log(tourDoc);
   } catch (err) {
     console.log('Error creating booking:', err);
   }
@@ -123,7 +123,7 @@ const createBookingCheckout = async session => {
 //   const { tour, user, price } = req.query;
 
 //   if (!tour && !user && !price) return next();
-//   await Booking.create({ tour, user, price });
+//   await Booking.create({ tour, user, price });s
 
 //   // Add participants to tour start date
 //   // const tour = await Tour.findById(tour);
