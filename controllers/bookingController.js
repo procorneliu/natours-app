@@ -95,28 +95,31 @@ const createBookingCheckout = async session => {
     const price = session.amount_total / 100;
     await Booking.create({ tour, user, price });
 
-    const customFieldValue = session.custom_fields[0].dropdown.value;
-    // const newTour = await Tour.findOneAndUpdate({ _id: tour }, [
-    //   {
-    //     $set: {
-    //       [`startDates.${customFieldValue}`]: {
-    //         $mergeObjects: [
-    //           '$startDates',
-    //           {
-    //             $inc: { participants: 1 },
-    //             soldOut: { $cond: [{ $eq: ['participants', 10] }, true, false] },
-    //           },
-    //         ],
-    //       },
-    //     },
-    //   },
-    // ]);
-    const newTour = await Tour.findById(tour);
-    newTour.startDates[customFieldValue].participants += 1;
-    if (newTour.startDates[customFieldValue].participants === newTour.maxGroupSize)
-      newTour.startDates[customFieldValue].soldOut = true;
+    const fieldValue = session.custom_fields[0].dropdown.value;
+    // const newTour = await Tour.findById(tour);
+    // newTour.startDates[fieldValue].participants += 1;
+    // if (newTour.startDates[fieldValue].participants === newTour.maxGroupSize)
+    //   newTour.startDates[fieldValue].soldOut = true;
+    // await newTour.save();
 
-    await newTour.save();
+    await Tour.findOneAndUpdate({ _id: tour }, [
+      {
+        $set: {
+          [`startDates.${fieldValue}.participants`]: {
+            $add: [`startDates.${fieldValue}.participants`, 1],
+          },
+          [`startDates.${fieldValue}.soldOut`]: {
+            $cond: {
+              if: {
+                $eq: [{ $add: [`startDates.${fieldValue}.participants`, 1] }, '$maxGroupSize'],
+              },
+              then: true,
+              else: false,
+            },
+          },
+        },
+      },
+    ]);
   } catch (err) {
     console.log('Error creating booking:', err);
   }
