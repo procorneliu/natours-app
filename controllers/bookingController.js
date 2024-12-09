@@ -103,13 +103,11 @@ const createBookingCheckout = async session => {
     // console.log(result);
 
     const tourDoc = Tour.findById(tour);
+    console.log(tour);
+    console.log(tourDoc.startDates);
+    // tourDoc.startDates[1].participants = 12;
 
-    console.log(tourDoc);
-    tourDoc.startDates[1].participants = 12;
-
-    await tourDoc.save();
-
-    console.log(tourDoc);
+    // await tourDoc.save();
   } catch (err) {
     console.log('Error creating booking:', err);
   }
