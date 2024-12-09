@@ -92,19 +92,15 @@ const createBookingCheckout = async session => {
     await Booking.create({ tour, user, price });
 
     // const customFieldValue = session.custom_fields[0].dropdown.value;
-    // const result = Tour.findOneAndUpdate(
-    //   { _id: tour },
-    //   {
-    //     $set: {
-    //       'startDates.1.participants': 2,
-    //     },
-    //   },
-    //   {
-    //     new: true,
-    //     runValidators: true,
-    //   },
-    // );
-    // console.log(result);
+    const result = Tour.findOneAndUpdate(
+      { _id: tour },
+      {
+        $set: {
+          'startDates.1.participants': 2,
+        },
+      },
+    );
+    console.log(result);
 
     // const tourDoc = Tour.findById(tour);
 
