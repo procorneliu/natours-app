@@ -94,10 +94,9 @@ const createBookingCheckout = async session => {
     const customFieldValue = session.custom_fields[0].dropdown.value;
     Tour.findOneAndUpdate(tour, {
       $set: {
-        [`startDates.${customFieldValue}.participants`]: 2,
+        'startDates.1.participants': 2,
       },
     });
-    // tour.startDates[];
   } catch (err) {
     console.log('Error creating booking:', err);
   }
@@ -116,7 +115,6 @@ const createBookingCheckout = async session => {
 // });
 
 exports.webhookCheckout = (req, res, next) => {
-  console.log('Webhook received 💥');
   const signature = req.headers['stripe-signature'];
 
   let event;
