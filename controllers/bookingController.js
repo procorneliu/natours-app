@@ -108,6 +108,7 @@ const createBookingCheckout = async session => {
 
     const tourDoc = Tour.findById(tour);
 
+    console.log(tourDoc);
     tourDoc.startDates[1].participants = 12;
 
     await tourDoc.save();
