@@ -92,11 +92,14 @@ const createBookingCheckout = async session => {
     await Booking.create({ tour, user, price });
 
     const customFieldValue = session.custom_fields[0].dropdown.value;
-    Tour.findOneAndUpdate(tour, {
-      $set: {
-        'startDates.1.participants': 2,
+    Tour.findOneAndUpdate(
+      { _id: tour },
+      {
+        $set: {
+          'startDates.1.participants': 2,
+        },
       },
-    });
+    );
   } catch (err) {
     console.log('Error creating booking:', err);
   }
