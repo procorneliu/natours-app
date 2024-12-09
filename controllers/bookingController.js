@@ -92,24 +92,24 @@ const createBookingCheckout = async session => {
     await Booking.create({ tour, user, price });
 
     // const customFieldValue = session.custom_fields[0].dropdown.value;
-    const result = Tour.findOneAndUpdate(
-      { _id: tour },
-      {
-        $set: {
-          'startDates.1.participants': 2,
-        },
-      },
-    );
-    console.log(result);
+    // const result = Tour.findOneAndUpdate(
+    //   { _id: tour },
+    //   {
+    //     $set: {
+    //       'startDates.1.participants': 2,
+    //     },
+    //   },
+    // );
+    // console.log(result);
 
-    // const tourDoc = Tour.findById(tour);
+    const tourDoc = Tour.findById(tour);
 
-    // console.log(tourDoc);
-    // tourDoc.startDates[1].participants = 12;
+    console.log(tourDoc);
+    tourDoc.startDates[1].participants = 12;
 
-    // await tourDoc.save();
+    await tourDoc.save();
 
-    // console.log(tourDoc);
+    console.log(tourDoc);
   } catch (err) {
     console.log('Error creating booking:', err);
   }
