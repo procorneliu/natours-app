@@ -103,7 +103,7 @@ const createBookingCheckout = async session => {
             $mergeObjects: [
               '$startDates',
               {
-                participants: { $inc: 1 },
+                $inc: { participants: 1 },
                 soldOut: { $cond: [{ $eq: ['participants', 10] }, true, false] },
               },
             ],
