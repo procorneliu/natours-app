@@ -102,16 +102,19 @@ const createBookingCheckout = async session => {
     //   newTour.startDates[fieldValue].soldOut = true;
     // await newTour.save();
 
-    await Tour.findOneAndUpdate({ _id: tour }, [
+    await Tour.updateOne({ _id: tour }, [
       {
         $set: {
           [`startDates.${fieldValue}.participants`]: {
-            $add: [`startDates.${fieldValue}.participants`, 1],
+            $add: [`$startDates.${fieldValue}.participants`, 1], // Increment participants by 1
           },
           [`startDates.${fieldValue}.soldOut`]: {
             $cond: {
               if: {
-                $eq: [{ $add: [`startDates.${fieldValue}.participants`, 1] }, '$maxGroupSize'],
+                $eq: [
+                  { $add: [`$startDates.${fieldValue}.participants`, 1] }, // Check if participants + 1
+                  '$maxGroupSize', // Matches maxGroupSize
+                ],
               },
               then: true,
               else: false,
