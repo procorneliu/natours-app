@@ -90,17 +90,23 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
 
 const createBookingCheckout = async session => {
   try {
-    const tour = session.client_reference_id;
+    const tour = await Tour.findById(session.client_reference_id);
+    // getting value from tour date field form, from checkout page
+    const fieldValue = session.custom_fields[0].dropdown.value;
+    // if tour is full, don't make booking
+    if (tour.startDates[fieldValue].soldOut)
+      return new AppError('This tour is already full! Please choose other date.');
+
     const user = (await User.findOne({ email: session.customer_email })).id;
     const price = session.amount_total / 100;
-    await Booking.create({ tour, user, price });
+    const newBooking = await Booking.create({ tour, user, price });
 
-    const fieldValue = session.custom_fields[0].dropdown.value;
-    const newTour = await Tour.findById(tour);
-    newTour.startDates[fieldValue].participants += 1;
-    if (newTour.startDates[fieldValue].participants === newTour.maxGroupSize)
-      newTour.startDates[fieldValue].soldOut = true;
-    await newTour.save();
+    if (!newBooking) return;
+
+    // if booking was made, add +1 to participants and check if tour date is not full
+    tour.startDates[fieldValue].participants += 1;
+    if (tour.startDates[fieldValue].participants === tour.maxGroupSize) tour.startDates[fieldValue].soldOut = true;
+    await tour.save();
 
     // await Tour.findByIdAndUpdate({ _id: tour }, [
     //   {
