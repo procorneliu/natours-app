@@ -101,8 +101,9 @@ const createBookingCheckout = async session => {
     // if (newTour.startDates[fieldValue].participants === newTour.maxGroupSize)
     //   newTour.startDates[fieldValue].soldOut = true;
     // await newTour.save();
-
-    await Tour.findByIdAndUpdate({ _id: tour }, [
+    console.log('to her');
+    console.log(tour);
+    const result = await Tour.findByIdAndUpdate({ _id: tour }, [
       {
         $set: {
           [`startDates.${fieldValue}.participants`]: {
@@ -123,6 +124,7 @@ const createBookingCheckout = async session => {
         },
       },
     ]);
+    console.log(result.startDates[fieldValue]);
   } catch (err) {
     console.log('Error creating booking:', err);
   }
