@@ -102,7 +102,7 @@ const createBookingCheckout = async session => {
     //   newTour.startDates[fieldValue].soldOut = true;
     // await newTour.save();
 
-    await Tour.updateOne({ _id: tour }, [
+    await Tour.findByIdAndUpdate({ _id: tour }, [
       {
         $set: {
           [`startDates.${fieldValue}.participants`]: {
