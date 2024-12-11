@@ -96,35 +96,33 @@ const createBookingCheckout = async session => {
     await Booking.create({ tour, user, price });
 
     const fieldValue = session.custom_fields[0].dropdown.value;
-    // const newTour = await Tour.findById(tour);
-    // newTour.startDates[fieldValue].participants += 1;
-    // if (newTour.startDates[fieldValue].participants === newTour.maxGroupSize)
-    //   newTour.startDates[fieldValue].soldOut = true;
-    // await newTour.save();
-    console.log('to her');
-    console.log(tour);
-    const result = await Tour.findByIdAndUpdate({ _id: tour }, [
-      {
-        $set: {
-          [`startDates.${fieldValue}.participants`]: {
-            $add: [`$startDates.${fieldValue}.participants`, 1], // Increment participants by 1
-          },
-          [`startDates.${fieldValue}.soldOut`]: {
-            $cond: {
-              if: {
-                $eq: [
-                  { $add: [`$startDates.${fieldValue}.participants`, 1] }, // Check if participants + 1
-                  '$maxGroupSize', // Matches maxGroupSize
-                ],
-              },
-              then: true,
-              else: false,
-            },
-          },
-        },
-      },
-    ]);
-    console.log(result.startDates[fieldValue]);
+    const newTour = await Tour.findById(tour);
+    newTour.startDates[fieldValue].participants += 1;
+    if (newTour.startDates[fieldValue].participants === newTour.maxGroupSize)
+      newTour.startDates[fieldValue].soldOut = true;
+    await newTour.save();
+
+    // await Tour.findByIdAndUpdate({ _id: tour }, [
+    //   {
+    //     $set: {
+    //       [`startDates.${fieldValue}.participants`]: {
+    //         $add: [`$startDates.${fieldValue}.participants`, 1], // Increment participants by 1
+    //       },
+    //       [`startDates.${fieldValue}.soldOut`]: {
+    //         $cond: {
+    //           if: {
+    //             $eq: [
+    //               { $add: [`$startDates.${fieldValue}.participants`, 1] }, // Check if participants + 1
+    //               '$maxGroupSize', // Matches maxGroupSize
+    //             ],
+    //           },
+    //           then: true,
+    //           else: false,
+    //         },
+    //       },
+    //     },
+    //   },
+    // ]);
   } catch (err) {
     console.log('Error creating booking:', err);
   }
